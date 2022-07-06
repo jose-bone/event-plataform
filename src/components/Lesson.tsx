@@ -21,14 +21,22 @@ export function Lesson({
 }: LessonProps) {
   const { slug: currentSlug } = useParams<{ slug: string }>();
 
-  const isLessonAvailable = isPast(props.availableAt);
+  const navigate = useNavigate();
+  const isLessonAvailable = isPast(availableAt);
   const availableDateFormatted = format(
-    props.availableAt,
+    availableAt,
     "EEEE' • 'd' de 'MMMM' • 'k'h'mm",
     { locale: pt }
   );
 
-  const isActiveLesson = slug === props.slug;
+  const isActiveLesson = currentSlug === slug;
+
+  function handleNavigateToVideo() {
+    if (isLessonAvailable) {
+      closeSidebar();
+      navigate(`/event/lesson/${slug}`);
+    }
+  }
 
   return (
     <div
@@ -79,7 +87,7 @@ export function Lesson({
               }
             )}
           >
-            {props.type === "live" ? "AO VIVO" : "AULA PRÁTICA"}
+            {type === "live" ? "AO VIVO" : "AULA PRÁTICA"}
           </span>
         </header>
 
@@ -89,7 +97,7 @@ export function Lesson({
             "text-gray-200": !isActiveLesson,
           })}
         >
-          {props.title}
+          {title}
         </strong>
       </div>
     </div>
