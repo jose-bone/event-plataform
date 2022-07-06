@@ -1,7 +1,7 @@
 import { CheckCircle, Lock } from "phosphor-react";
 import { isPast, format } from "date-fns";
 import pt from "date-fns/locale/pt";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
 
 interface LessonProps {
@@ -9,10 +9,17 @@ interface LessonProps {
   slug: string;
   availableAt: Date;
   type: "live" | "class";
+  closeSidebar: () => void;
 }
 
-export function Lesson(props: LessonProps) {
-  const { slug } = useParams<{ slug: string }>();
+export function Lesson({
+  title,
+  slug,
+  availableAt,
+  type,
+  closeSidebar,
+}: LessonProps) {
+  const { slug: currentSlug } = useParams<{ slug: string }>();
 
   const isLessonAvailable = isPast(props.availableAt);
   const availableDateFormatted = format(
@@ -24,7 +31,12 @@ export function Lesson(props: LessonProps) {
   const isActiveLesson = slug === props.slug;
 
   return (
-    <Link to={`/event/lesson/${props.slug}`} className="group">
+    <div
+      className={classNames("cursor-pointer", {
+        "cursor-default": !isLessonAvailable,
+      })}
+      onClick={handleNavigateToVideo}
+    >
       <span className="text-gray-300">{availableDateFormatted}</span>
 
       <div
@@ -32,6 +44,8 @@ export function Lesson(props: LessonProps) {
           "rounded border border-gray-500 p-4 mt-2 group-hover:border-green-500",
           {
             "bg-green-500": isActiveLesson,
+            "relative before:absolute before:content-[''] before:bg-green-500 before:p-2 before:rotate-45 before:top-[45%] before:left-[-8px]":
+              isActiveLesson,
           }
         )}
       >
@@ -78,6 +92,6 @@ export function Lesson(props: LessonProps) {
           {props.title}
         </strong>
       </div>
-    </Link>
+    </div>
   );
 }
