@@ -11,8 +11,19 @@ export function Event() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex flex-1">
-        {slug ? <Video lessonSlug={slug} /> : <div className="flex-1" />}
-        <Sidebar />
+        {slug && !modalState ? (
+          <Video lessonSlug={slug} />
+        ) : (
+          <div className="flex-1" />
+        )}
+        <div
+          className={classNames("md:flex", {
+            "absolute z-10 flex w-full": modalState,
+            hidden: !modalState,
+          })}
+        >
+          <Sidebar closeModal={handleCloseModal} />
+        </div>
       </main>
     </div>
   );
