@@ -1,8 +1,17 @@
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetLessonsQuery } from "../graphql/generated";
 import { Lesson } from "./Lesson";
 
 export function Sidebar() {
   const { data } = useGetLessonsQuery();
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+
+  if (!slug) {
+    if (data) {
+      navigate(`/event/lesson/${data?.lessons[0].slug}`);
+    }
+  }
 
   return (
     <aside className="w-[348px] bg-gray-700 p-6 border-l border-gray-600">
